@@ -16,7 +16,6 @@ except AttributeError: raise RuntimeError("Use IDLE")
 
 ##############################################################################################################
 #GLOBAL VARS
-color.write ("ITALIA - POSITIVI PER TAMPONI EFFETTUATI \n","STRING")
 dayM = [10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30] #marzo
 dayA = [] #aprile
 date=[]
@@ -24,56 +23,65 @@ casi=0
 tamponi=0
 ##############################################################################################################
 
+
+##############################################################################################################
+#GLOBAL FUN
+def plotGraph(x,y,xLabel,ylabel,title):
+    plt.plot(x,y)
+    plt.ylabel(ylabel)
+    plt.xlabel(xLabel)
+    plt.title (title)
+    plt.show()  
+##############################################################################################################
+
+
+##############################################################################################################
+# ITALIA - CASI PER TAMPONI
+##############################################################################################################
 casiTampArIt=[]
 casiArIt=[]
+
+def elabCasiTampArIt(tempS,url):
+    data = urllib.request.urlopen(url+tempS + '.csv')
+    myData = data.read()
+    mystr = myData.decode("utf8")
+    data.close()
+    mystrSPLIT = mystr.split(",")
+    casi = int(mystrSPLIT[25])
+    tamponi = int(mystrSPLIT[26])
+    dat = [casi,tamponi]  
+    return dat
+
+def calcCasiTampone(day,casi,tamponi,mese):
+    month = ""
+    if mese == 3:
+        month = "Marzo"
+    elif mese == 4:
+        month = "Arile" 
+    ct = float( (format(round(casi/tamponi,5),'.5f')) )
+    casiTampArIt.append (ct)
+    casiArIt.append( math.log10(int(dat[0])) )
+    date.append(datetime(year=2020, month=mese, day=d))
+    print (day + ' ' + month + ' : ', end = '')
+    print (str(ct), end = '')
+    print (" - casi rilevati:" + str(dat[0]), end = '')
+    print (" - tamponi effettuati:" + str(dat[1]) )
+
+color.write ("ITALIA - POSITIVI PER TAMPONI EFFETTUATI \n","STRING")
+
 for d in dayM:
-    tempS = str(d)
-    data = urllib.request.urlopen('https://raw.githubusercontent.com/pcm-dpc/COVID-19/master/dati-andamento-nazionale/dpc-covid19-ita-andamento-nazionale-202003' + tempS + '.csv')
-    myData = data.read()
-    mystr = myData.decode("utf8")
-    data.close()
-    mystrSPLIT = mystr.split(",")
-    casi = int(mystrSPLIT[25])
-    tamponi = int(mystrSPLIT[26])
-    print (tempS + ' Marzo:', end = '')
-    ct = float( (format(round(casi/tamponi,5),'.5f')) )
-    casiTampArIt.append (ct)
-    casiArIt.append( math.log10(int(casi)) )
-    date.append(datetime(year=2020, month=3, day=d))
-    print (str(ct), end = '')
-    print (" - casi rilevati:" + str(casi), end = '')
-    print (" - tamponi effettuati:" + str(tamponi) )
-
+    dat = elabCasiTampArIt(str(d),'https://raw.githubusercontent.com/pcm-dpc/COVID-19/master/dati-andamento-nazionale/dpc-covid19-ita-andamento-nazionale-202003')
+    calcCasiTampone(str(d),dat[0],dat[1],3)
+    
 for d in dayA:
-    tempS = str(d)
-    data = urllib.request.urlopen('https://raw.githubusercontent.com/pcm-dpc/COVID-19/master/dati-andamento-nazionale/dpc-covid19-ita-andamento-nazionale-202004' + tempS + '.csv')
-    myData = data.read()
-    mystr = myData.decode("utf8")
-    data.close()
-    mystrSPLIT = mystr.split(",")
-    casi = int(mystrSPLIT[25])
-    tamponi = int(mystrSPLIT[26])
-    print (tempS + ' Aprile:', end = '')
-    ct = float( (format(round(casi/tamponi,5),'.5f')) )
-    casiArIt.append( math.log10(int(casi)) )
-    casiTampArIt.append (ct)
-    date.append(datetime(year=2020, month=4, day=d))
-    print (str(ct), end = '')
-    print (" - casi rilevati:" + str(casi), end = '')
-    print (" - tamponi effettuati:" + str(tamponi) )
+    dat = elabCasiTampArIt(str(d),'https://raw.githubusercontent.com/pcm-dpc/COVID-19/master/dati-andamento-nazionale/dpc-covid19-ita-andamento-nazionale-202004')
+    calcCasiTampone(str(d),dat[0],dat[1],4)
 
-plt.plot(date,casiTampArIt)
-plt.ylabel('Casi per tamponi')
-plt.xlabel('Giorni')
-plt.title ( 'Italia - Casi per tamponi')
-plt.show()
+plotGraph(date,casiTampArIt,'Giorni','Casi per tamponi','Italia - Casi per tamponi')
+plotGraph(date,casiArIt,'Giorni','Casi','Italia - Casi scala log')
 
-plt.plot(date,casiArIt)
-plt.ylabel('Casi')
-plt.xlabel('Giorni')
-plt.title ( 'Italia - Casi scala log')
-plt.show()
-
+##############################################################################################################
+#ITALIA - TERAPIA INTENSIVA
 ##############################################################################################################
 color.write ("ITALIA - INCREMENTO RICOVERATI TERAPIA INTENSIVA \n","STRING" )
 terapianInOLd = 0
@@ -113,12 +121,14 @@ plt.title ('Italia - Ricoveri terapia intensiva')
 plt.show()
 
 ##############################################################################################################
+# TOSCANA - CASI PER TAMPONI
+##############################################################################################################
 color.write ("TOSCANA- POSITIVI PER TAMPONI EFFETTUATI \n","STRING" )
 casiArTampTo=[]
 casiArTo=[]
-for d in dayM:
-    tempS = str(d)
-    data = urllib.request.urlopen('https://raw.githubusercontent.com/pcm-dpc/COVID-19/master/dati-regioni/dpc-covid19-ita-regioni-202003'+ tempS + '.csv')
+
+def elabCasiTampArTO(tempS,url):
+    data = urllib.request.urlopen(url + tempS + '.csv')
     myData = data.read()
     mystr = myData.decode("utf8")
     data.close()
@@ -126,43 +136,34 @@ for d in dayM:
     regionSplit = mySplit[17].split(",")
     casi = int(regionSplit[15])
     tamponi = int(regionSplit[16])
-    print (tempS + ' Marzo:', end = '')
+    dat = [casi,tamponi]  
+    return dat
+
+def calcCasiTampArTO(day,casi,tamponi,mese):
+    month = ""
+    if mese == 3:
+        month = "Marzo"
+    elif mese == 4:
+        month = "Arile"
     ct = float( (format(round(casi/tamponi,5),'.5f')) )
     casiArTampTo.append (ct)
     casiArTo.append( math.log10(int(casi)) )
-    print ( format(round(casi/tamponi,5),'.5f'), end = '')
+    print (day + ' ' + month + ' : ', end = '')
+    print (str(ct), end = '')
     print (" - casi rilevati: " + str(casi), end = '')
     print (" - tamponi effettuati: " + str(tamponi) )
+    
+for d in dayM:
+    dat = elabCasiTampArTO(str(d),'https://raw.githubusercontent.com/pcm-dpc/COVID-19/master/dati-regioni/dpc-covid19-ita-regioni-202003')
+    calcCasiTampArTO(str(d),dat[0],dat[1],3)
 
 for d in dayA:
-    tempS = str(d)
-    data = urllib.request.urlopen('https://raw.githubusercontent.com/pcm-dpc/COVID-19/master/dati-regioni/dpc-covid19-ita-regioni-202003'+ tempS + '.csv')
-    myData = data.read()
-    mystr = myData.decode("utf8")
-    data.close()
-    mySplit = mystr.splitlines()
-    regionSplit = mySplit[17].split(",")
-    casi = int(regionSplit[15])
-    tamponi = int(regionSplit[16])
-    print (tempS + ' Aprile:', end = '')
-    ct = float( (format(round(casi/tamponi,5),'.5f')) )
-    casiArTampTo.append (ct)
-    casiArTo.append( math.log10(int(casi)) )
-    print ( format(round(casi/tamponi,5),'.5f'), end = '')
-    print (" - casi rilevati: " + str(casi), end = '')
-    print (" - tamponi effettuati: " + str(tamponi) )
+    dat = elabCasiTampArTO(str(d),'https://raw.githubusercontent.com/pcm-dpc/COVID-19/master/dati-regioni/dpc-covid19-ita-regioni-202004')
+    calcCasiTampArTO(str(d),dat[0],dat[1],3)
+   
+plotGraph(date,casiArTampTo,'Giorni','Casi per tamponi','Toscana - Casi per tamponi')
+plotGraph(date,casiArTo,'Giorni','Casi','Toscana - Casi scala log')
 
-plt.plot(date,casiArTampTo)
-plt.title ('Toscana - Casi per tamponi')
-plt.xlabel('Giorni')
-plt.ylabel('Casi')
-plt.show()
-
-plt.plot(date,casiArTo)
-plt.title ('Toscana - Casi scala log')
-plt.xlabel('Giorni')
-plt.ylabel('Casi')
-plt.show()
 
 ##############################################################################################################
 color.write ("TOSCANA - INCREMENTO RICOVERATI TERAPIA INTENSIVA \n","STRING" )
