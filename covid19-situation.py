@@ -83,42 +83,42 @@ plotGraph(date,casiArIt,'Giorni','Casi','Italia - Casi scala log')
 ##############################################################################################################
 #ITALIA - TERAPIA INTENSIVA
 ##############################################################################################################
+
+def elabCasiTerInITA(tempS,url):
+    data = urllib.request.urlopen(url + tempS + '.csv')
+    myData = data.read()
+    mystr = myData.decode("utf8")
+    data.close()
+    mystrSPLIT = mystr.split(",")
+    terapianIn = int(mystrSPLIT[17])  
+    return terapianIn
+
+def calcCasiTerInITA(day,terIn,mese):
+    global terInOLd
+    month = ""
+    if mese == 3:
+        month = "Marzo"
+    elif mese == 4:
+        month = "Arile" 
+    terInIt.append (terIn)
+    diff = ( terIn - terInOLd )
+    print (day + ' ' + month + ' : ' + str(terIn), end = '')
+    print (" - Differenza giorno prec: " + str(diff) )
+    terInOLd = terIn
+
 color.write ("ITALIA - INCREMENTO RICOVERATI TERAPIA INTENSIVA \n","STRING" )
-terapianInOLd = 0
+terInOLd = 0
 terInIt=[]
 for d in dayM:
-    tempS = str(d)
-    data = urllib.request.urlopen('https://raw.githubusercontent.com/pcm-dpc/COVID-19/master/dati-andamento-nazionale/dpc-covid19-ita-andamento-nazionale-202003' + tempS + '.csv')
-    myData = data.read()
-    mystr = myData.decode("utf8")
-    data.close()
-    mystrSPLIT = mystr.split(",")
-    terapianIn = int(mystrSPLIT[17])
-    terInIt.append (terapianIn)
-    diff = ( terapianIn - terapianInOLd )
-    print (tempS + ' Marzo:' + str(terapianIn), end = '')
-    print (" - Differenza giorno prec: " + str(diff) )
-    terapianInOLd = terapianIn
-
+    dat = elabCasiTerInITA(str(d),'https://raw.githubusercontent.com/pcm-dpc/COVID-19/master/dati-andamento-nazionale/dpc-covid19-ita-andamento-nazionale-202003')
+    calcCasiTerInITA(str(d),dat,3)
+    
 for d in dayA:
-    tempS = str(d)
-    data = urllib.request.urlopen('https://raw.githubusercontent.com/pcm-dpc/COVID-19/master/dati-andamento-nazionale/dpc-covid19-ita-andamento-nazionale-202003' + tempS + '.csv')
-    myData = data.read()
-    mystr = myData.decode("utf8")
-    data.close()
-    mystrSPLIT = mystr.split(",")
-    terapianIn = int(mystrSPLIT[17])
-    terInIt.append (terapianIn)
-    diff = ( terapianIn - terapianInOLd )
-    print (tempS + ' Aprile:' + str(terapianIn), end = '')
-    print (" - Differenza giorno prec: " + str(diff) )
-    terapianInOLd = terapianIn
+    dat = elabCasiTerInITA(str(d),'https://raw.githubusercontent.com/pcm-dpc/COVID-19/master/dati-andamento-nazionale/dpc-covid19-ita-andamento-nazionale-202004s')
+    calcCasiTerInITA(str(d),dat,4)
+    
+plotGraph(date,terInIt,'Giorni','Terapie Intensive','Italia - Ricoveri terapia intensiva')
 
-plt.plot(date,terInIt)
-plt.ylabel('Terapie Intensive')
-plt.xlabel('Giorni')
-plt.title ('Italia - Ricoveri terapia intensiva')
-plt.show()
 
 ##############################################################################################################
 # TOSCANA - CASI PER TAMPONI
@@ -166,42 +166,42 @@ plotGraph(date,casiArTo,'Giorni','Casi','Toscana - Casi scala log')
 
 
 ##############################################################################################################
+# TOSCANA - TERAPIA INTENSIVA
+##############################################################################################################
+
+def elabCasiTerInTO(tempS,url):
+    data = urllib.request.urlopen(url + tempS + '.csv')
+    myData = data.read()
+    mystr = myData.decode("utf8")
+    data.close()
+    mySplit = mystr.splitlines()
+    regionSplit = mySplit[17].split(",")
+    terapianIn = int ( regionSplit[7] )
+    return terapianIn 
+    
+def calcCasiTerInTO(day,terIn,mese):
+    global terInOLd
+    month = ""
+    if mese == 3:
+        month = "Marzo"
+    elif mese == 4:
+        month = "Arile" 
+    terInTo.append (terIn)
+    diff = ( terIn - terInOLd )
+    print (day + ' ' + month + ' : ' + str(terIn), end = '')
+    print (" - Differenza giorno prec: " + str(diff) )
+    terInOLd = terIn
+    
 color.write ("TOSCANA - INCREMENTO RICOVERATI TERAPIA INTENSIVA \n","STRING" )
-day = [10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30]
-terapianInOLd = 0
+
+terInOLd = 0
 terInTo=[]
 for d in dayM:
-    tempS = str(d)
-    data = urllib.request.urlopen('https://raw.githubusercontent.com/pcm-dpc/COVID-19/master/dati-regioni/dpc-covid19-ita-regioni-202003'+ tempS + '.csv')
-    myData = data.read()
-    mystr = myData.decode("utf8")
-    data.close()
-    mySplit = mystr.splitlines()
-    regionSplit = mySplit[17].split(",")
-    terapianIn = int ( regionSplit[7] )
-    terInTo.append (terapianIn)
-    diff = ( terapianIn - terapianInOLd )
-    print (tempS + ' Marzo: ' + str(terapianIn), end = '')
-    print (" - Differenza giorno prec: " + str(diff) )
-    terapianInOLd = terapianIn
+    dat = elabCasiTerInTO(str(d),'https://raw.githubusercontent.com/pcm-dpc/COVID-19/master/dati-regioni/dpc-covid19-ita-regioni-202003')
+    calcCasiTerInTO(str(d),dat,3)
 
 for d in dayA:
-    tempS = str(d)
-    data = urllib.request.urlopen('https://raw.githubusercontent.com/pcm-dpc/COVID-19/master/dati-regioni/dpc-covid19-ita-regioni-202003'+ tempS + '.csv')
-    myData = data.read()
-    mystr = myData.decode("utf8")
-    data.close()
-    mySplit = mystr.splitlines()
-    regionSplit = mySplit[17].split(",")
-    terapianIn = int ( regionSplit[7] )
-    terInTo.append (terapianIn)
-    diff = ( terapianIn - terapianInOLd )
-    print (tempS + ' Aprile: ' + str(terapianIn), end = '')
-    print (" - Differenza giorno prec: " + str(diff) )
-    terapianInOLd = terapianIn
+    dat = calcCasiTerInTO(str(d),'https://raw.githubusercontent.com/pcm-dpc/COVID-19/master/dati-regioni/dpc-covid19-ita-regioni-202004')
+    calcCasiTerInTO(str(d),dat,4)
 
-plt.plot(date, terInTo)
-plt.ylabel('Casi per tamponi')
-plt.xlabel('Giorni')
-plt.title ('Toscana - Ricoveri terapia intensiva')
-plt.show()
+plotGraph(date,terInTo,'Giorni','Terapie Intensive','Italia - Ricoveri terapia intensiva')
