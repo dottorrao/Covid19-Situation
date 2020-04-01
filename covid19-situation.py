@@ -17,7 +17,7 @@ except AttributeError: raise RuntimeError("Use IDLE")
 ##############################################################################################################
 #GLOBAL VARS
 dayM = [10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31] #marzo
-dayA = [] #aprile
+dayA = [1] #aprile
 date=[]
 casi=0
 tamponi=0
@@ -74,7 +74,7 @@ for d in dayM:
     calcCasiTampone(str(d),dat[0],dat[1],3)
     
 for d in dayA:
-    dat = elabCasiTampArIt(str(d),'https://raw.githubusercontent.com/pcm-dpc/COVID-19/master/dati-andamento-nazionale/dpc-covid19-ita-andamento-nazionale-202004')
+    dat = elabCasiTampArIt(str(d),'https://raw.githubusercontent.com/pcm-dpc/COVID-19/master/dati-andamento-nazionale/dpc-covid19-ita-andamento-nazionale-2020040')
     calcCasiTampone(str(d),dat[0],dat[1],4)
 
 plotGraph(date,casiTampArIt,'Giorni','Casi per tamponi','Italia - Casi per tamponi')
@@ -116,7 +116,7 @@ for d in dayM:
     calcCasiTerInITA(str(d),dat,3)
     
 for d in dayA:
-    dat = elabCasiTerInITA(str(d),'https://raw.githubusercontent.com/pcm-dpc/COVID-19/master/dati-andamento-nazionale/dpc-covid19-ita-andamento-nazionale-202004s')
+    dat = elabCasiTerInITA(str(d),'https://raw.githubusercontent.com/pcm-dpc/COVID-19/master/dati-andamento-nazionale/dpc-covid19-ita-andamento-nazionale-2020040')
     calcCasiTerInITA(str(d),dat,4)
     
 plotGraph(date,terInArrIt,'Giorni','Terapie Intensive','Italia - Ricoveri terapia intensiva')
@@ -161,7 +161,7 @@ for d in dayM:
     calcCasiTampArTO(str(d),dat[0],dat[1],3)
 
 for d in dayA:
-    dat = elabCasiTampArTO(str(d),'https://raw.githubusercontent.com/pcm-dpc/COVID-19/master/dati-regioni/dpc-covid19-ita-regioni-202004')
+    dat = elabCasiTampArTO(str(d),'https://raw.githubusercontent.com/pcm-dpc/COVID-19/master/dati-regioni/dpc-covid19-ita-regioni-2020040')
     calcCasiTampArTO(str(d),dat[0],dat[1],3)
    
 plotGraph(date,casiTampArTo,'Giorni','Casi per tamponi','Toscana - Casi per tamponi')
@@ -206,7 +206,7 @@ for d in dayM:
     calcCasiTerInTO(str(d),dat,3)
 
 for d in dayA:
-    dat = calcCasiTerInTO(str(d),'https://raw.githubusercontent.com/pcm-dpc/COVID-19/master/dati-regioni/dpc-covid19-ita-regioni-202004')
+    dat = elabCasiTerInTO(str(d),'https://raw.githubusercontent.com/pcm-dpc/COVID-19/master/dati-regioni/dpc-covid19-ita-regioni-2020040')
     calcCasiTerInTO(str(d),dat,4)
 
 plotGraph(date,terInTo,'Giorni','Terapie Intensive','Toscana - Ricoveri terapia intensiva')
@@ -256,8 +256,26 @@ for d in dayM:
     calcCasiPO(str(d),dat,3)
     
 for d in dayA:
-    dat = elabCasiPO(str(d),'https://raw.githubusercontent.com/pcm-dpc/COVID-19/master/dati-province/dpc-covid19-ita-province-202004')
+    dat = elabCasiPO(str(d),'https://raw.githubusercontent.com/pcm-dpc/COVID-19/master/dati-province/dpc-covid19-ita-province-2020040')
     calcCasiPO(str(d),dat,4)
 
 plotGraph(date,casPo,'Giorni','Casi','Prato - Casi')
 plotGraph(date,casPoLog,'Giorni','Casi','Prato - Casi (scala log.)')
+
+##############################################################################################################
+# GRAFICI COMPARATI
+##############################################################################################################
+plt.plot(date,casiTampArIt)
+plt.plot(date,casiTampArTo)
+plt.ylabel("Casi")
+plt.xlabel("Giorni")
+plt.title ("Casi per tamponi - Confronto andamento Nazionale/Toscana")
+plt.show()
+
+plt.plot(date,casiTampArItLog)
+plt.plot(date,casiTampArToLog)
+plt.ylabel("Casi")
+plt.xlabel("Giorni")
+plt.title ("Casi per tamponi - Confronto andamento Nazionale/Toscana (scala log)")
+plt.show() 
+
