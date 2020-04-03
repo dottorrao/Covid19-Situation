@@ -4,6 +4,7 @@
 
 #IMPORT SECTION
 import urllib.request
+import os, ssl
 import io
 import sys
 import matplotlib
@@ -23,6 +24,8 @@ casi=0
 tamponi=0
 ##############################################################################################################
 
+if (not os.environ.get('PYTHONHTTPSVERIFY', '') and getattr(ssl, '_create_unverified_context', None)):
+    ssl._create_default_https_context = ssl._create_unverified_context
 
 ##############################################################################################################
 #GLOBAL FUN
