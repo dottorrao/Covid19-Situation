@@ -17,7 +17,7 @@ except AttributeError: raise RuntimeError("Use IDLE")
 ##############################################################################################################
 #GLOBAL VARS
 dayM = [10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31] #marzo
-dayA = [1] #aprile
+dayA = [1,2] #aprile
 date=[]
 casi=0
 tamponi=0
@@ -263,7 +263,7 @@ plotGraph(date,casPo,'Giorni','Casi','Prato - Casi')
 plotGraph(date,casPoLog,'Giorni','Casi','Prato - Casi (scala log.)')
 
 ##############################################################################################################
-# GRAFICI COMPARATI
+# GRAFICI COMPARATIVI
 ##############################################################################################################
 plt.plot(date,casiTampArIt)
 plt.plot(date,casiTampArTo)
