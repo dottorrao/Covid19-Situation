@@ -11,17 +11,29 @@ import matplotlib
 import matplotlib.pyplot as plt
 import numpy as np
 import math
+import pandas as pd
 from datetime import datetime, timedelta
-try: color = sys.stdout.shell
-except AttributeError: raise RuntimeError("Use IDLE")
+#try: color = sys.stdout.shell
+#except AttributeError: raise RuntimeError("Use IDLE")
 
 ##############################################################################################################
 #GLOBAL VARS
 dayM = [10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31] #marzo
-dayA = [1,2] #aprile
+dayA = [1,2,3] #aprile
 date=[]
 casi=0
 tamponi=0
+
+class bcolors:
+    HEADER = '\033[95m'
+    OKBLUE = '\033[94m'
+    OKGREEN = '\033[92m'
+    WARNING = '\033[93m'
+    FAIL = '\033[91m'
+    ENDC = '\033[0m'
+    BOLD = '\033[1m'
+    UNDERLINE = '\033[4m'
+
 ##############################################################################################################
 
 if (not os.environ.get('PYTHONHTTPSVERIFY', '') and getattr(ssl, '_create_unverified_context', None)):
@@ -42,7 +54,9 @@ def plotGraph(x,y,xLabel,ylabel,title):
 # ITALIA - CASI PER TAMPONI
 ##############################################################################################################
 casiTampArIt=[]
+casiTampArIth24=[]
 casiTampArItLog=[]
+tamponih24=[]
 
 def elabCasiTampArIt(tempS,url):
     data = urllib.request.urlopen(url+tempS + '.csv')
@@ -56,22 +70,29 @@ def elabCasiTampArIt(tempS,url):
     return dat
 
 def calcCasiTampone(day,casi,tamponi,mese):
+    global casiTampOld
     month = ""
     if mese == 3:
         month = "Marzo"
     elif mese == 4:
         month = "Arile" 
     ct = float( (format(round(casi/tamponi,5),'.5f')) )
+    cth24 = float( (format(round( (casi-casiTampOld[0])/(tamponi-casiTampOld[1]),5),'.5f')) )
+    tamponih24.append(tamponi-casiTampOld[1])
     casiTampArIt.append (ct)
+    casiTampArIth24.append (cth24)
     casiTampArItLog.append( math.log10(int(dat[0])) )
-    date.append(datetime(year=2020, month=mese, day=d))
+    date.append(datetime(year=2020, month=mese, day=d, hour = 18, minute = 1, second = 1))
     print (day + ' ' + month + ' : ', end = '')
     print (str(ct), end = '')
     print (" - casi rilevati:" + str(dat[0]), end = '')
-    print (" - tamponi effettuati:" + str(dat[1]) )
+    print (" - tamponi effettuati:" + str(dat[1]), end = '')
+    print (" - rapporto ultime 24h:" + str(cth24)  )
+    casiTampOld = [casi,tamponi]
 
-color.write ("ITALIA - POSITIVI PER TAMPONI EFFETTUATI \n","STRING")
+print (f"{bcolors.WARNING}ITALIA - POSITIVI PER TAMPONI EFFETTUATI{bcolors.ENDC}")
 
+casiTampOld=[9172,53826] #inizializzo ai dati del 9 marzo
 for d in dayM:
     dat = elabCasiTampArIt(str(d),'https://raw.githubusercontent.com/pcm-dpc/COVID-19/master/dati-andamento-nazionale/dpc-covid19-ita-andamento-nazionale-202003')
     calcCasiTampone(str(d),dat[0],dat[1],3)
@@ -80,8 +101,24 @@ for d in dayA:
     dat = elabCasiTampArIt(str(d),'https://raw.githubusercontent.com/pcm-dpc/COVID-19/master/dati-andamento-nazionale/dpc-covid19-ita-andamento-nazionale-2020040')
     calcCasiTampone(str(d),dat[0],dat[1],4)
 
-plotGraph(date,casiTampArIt,'Giorni','Casi per tamponi','Italia - Casi per tamponi')
 plotGraph(date,casiTampArItLog,'Giorni','Casi per tamponi','Italia - Casi per tamponi (scala log.)')
+
+fig, ax1 = plt.subplots()
+ax1.bar(date, tamponih24)
+ax1.legend(labels=['Tamponi giornalieri'])
+ax2 = ax1.twinx()
+ax2.plot(date, casiTampArIth24,color='tab:orange')
+ax2.plot(date, casiTampArIt,color='tab:red')
+ax2.legend(labels=['Casi/Tamponi h24', 'Casi/Tamponi da inizio'])
+
+ax1.set(xlabel='Giorni', ylabel='Tamponi Giornalieri',
+       title='Casi per tamponi Italia - Confronto andamento inizio epidemia/giornaliero ultime 24h')
+
+ax2.set(xlabel='Giorni', ylabel='Casi per tampone',
+       title='Casi per tamponi Italia - Confronto andamento inizio epidemia/giornaliero ultime 24h')
+
+ax1.grid()
+plt.show()
 
 ##############################################################################################################
 #ITALIA - TERAPIA INTENSIVA
@@ -110,7 +147,8 @@ def calcCasiTerInITA(day,terIn,mese):
     print (" - Differenza giorno prec: " + str(diff) )
     terInOLd = terIn
 
-color.write ("ITALIA - INCREMENTO RICOVERATI TERAPIA INTENSIVA \n","STRING" )
+print (f"{bcolors.WARNING}ITALIA - INCREMENTO RICOVERATI TERAPIA INTENSIVA{bcolors.ENDC}" )
+
 terInOLd = 0
 terInArrIt=[]
 terInArrItLog=[]
@@ -129,10 +167,9 @@ plotGraph(date,terInArrItLog,'Giorni','Terapie Intensive','Italia - Ricoveri ter
 ##############################################################################################################
 # TOSCANA - CASI PER TAMPONI
 ##############################################################################################################
-color.write ("TOSCANA- POSITIVI PER TAMPONI EFFETTUATI \n","STRING" )
+print (f"{bcolors.WARNING}TOSCANA- POSITIVI PER TAMPONI EFFETTUATI{bcolors.ENDC}" )
 casiTampArTo=[]
 casiTampArToLog=[]
-
 def elabCasiTampArTO(tempS,url):
     data = urllib.request.urlopen(url + tempS + '.csv')
     myData = data.read()
@@ -198,9 +235,8 @@ def calcCasiTerInTO(day,terIn,mese):
     print (day + ' ' + month + ' : ' + str(terIn), end = '')
     print (" - Differenza giorno prec: " + str(diff) )
     terInOLd = terIn
-    
-color.write ("TOSCANA - INCREMENTO RICOVERATI TERAPIA INTENSIVA \n","STRING" )
 
+print (f"{bcolors.WARNING}TOSCANA - INCREMENTO RICOVERATI TERAPIA INTENSIVA{bcolors.ENDC}" )
 terInOLd = 0
 terInTo=[]
 terInToLog=[]
@@ -240,7 +276,7 @@ def calcCasiPO(day,casi,mese):
     if mese == 3:
         month = "Marzo"
     elif mese == 4:
-        month = "Arile" 
+        month = "Aprile" 
 
     casPo.append (casi)
 
@@ -252,7 +288,7 @@ def calcCasiPO(day,casi,mese):
     print (day + ' ' + month + ' : ', end = '')
     print (" - casi rilevati:" + str(casi) )
 
-color.write ("PRATO - CASI \n","STRING")
+print (f"{bcolors.WARNING}PRATO - CASI{bcolors.ENDC}" )
 
 for d in dayM:
     dat = elabCasiPO(str(d),'https://raw.githubusercontent.com/pcm-dpc/COVID-19/master/dati-province/dpc-covid19-ita-province-202003')
@@ -281,4 +317,3 @@ plt.ylabel("Casi")
 plt.xlabel("Giorni")
 plt.title ("Casi per tamponi - Confronto andamento Nazionale/Toscana (scala log)")
 plt.show() 
-
