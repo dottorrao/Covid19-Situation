@@ -27,11 +27,11 @@ tamponi=0
 #pdf = matplotlib.backends.backend_pdf.PdfPages(out_pdf)
 
 italiaCasiTampone = True
-italiaTerapiaIntensiva = True
-toscanaCasiTampone = True
-toscanaTerapiaIntensiva = True
-pratoCasi = True
-comparazioni = True
+italiaTerapiaIntensiva = False
+toscanaCasiTampone = False
+toscanaTerapiaIntensiva = False
+pratoCasi = False
+comparazioni = False
 
 class bcolors:
     HEADER = '\033[95m'
@@ -78,6 +78,7 @@ if italiaCasiTampone == True:
     casiTampArIth24=[]
     casiTampArItLog=[]
     tamponih24=[]
+    casih24=[]
 
     def elabCasiTampArIt(tempS,url):
         data = urllib.request.urlopen(url+tempS + '.csv')
@@ -94,6 +95,7 @@ if italiaCasiTampone == True:
     def calcCasiTampone(day,casi,tamponi,deceduti,mese):
         global casiTampOld
         global decedutiOld
+        global casiOld
         month = ""
         if mese == 3:
             month = "Marzo"
@@ -102,22 +104,27 @@ if italiaCasiTampone == True:
         ct = float( (format(round(casi/tamponi,5),'.5f')) )
         cth24 = float( (format(round( (casi-casiTampOld[0])/(tamponi-casiTampOld[1]),5),'.5f')) )
         tamponih24.append(tamponi-casiTampOld[1])
-        casiTampArIt.append (ct)
-        casiTampArIth24.append (cth24)
+        casiTampArIt.append ( ct ) 
+        casiTampArIth24.append ( cth24 )
         casiTampArItLog.append( math.log10(int(casi)) )
+        casih24.append ( int(casi)-int(casiOld) ) 
         #date.append(datetime(year=2020, month=mese, day=d, hour = 18, minute = 30, second = 0))
+        '''
         print (day + ' ' + month + ' : ', end = '')
         print (str(ct), end = '')
         print (" - casi rilevati:" + str(casi), end = '')
         print (" - tamponi effettuati:" + str(tamponi), end = '')
         print (" - rapporto ultime 24h:" + str(cth24)  )
+        '''
         casiTampOld = [casi,tamponi]
         decedutiOld = deceduti
-
+        casiOld = casi
+        
     print (f"{bcolors.WARNING}ITALIA - POSITIVI PER TAMPONI EFFETTUATI{bcolors.ENDC}")
 
     casiTampOld = [9172,53826] #inizializzo ai dati del 9 marzo
     decedutiOld = 1
+    casiOld = 9172 #inizializzo ai dati del 9 marzo
     for d in dayM:
         dat = elabCasiTampArIt(str(d),'https://raw.githubusercontent.com/pcm-dpc/COVID-19/master/dati-andamento-nazionale/dpc-covid19-ita-andamento-nazionale-202003')
         calcCasiTampone(str(d),dat[0],dat[1],dat[2],3)
@@ -139,6 +146,16 @@ if italiaCasiTampone == True:
         title='Casi per tamponi Italia - Confronto andamento inizio epidemia/giornaliero ultime 24h')
     ax2.set(xlabel='Giorni', ylabel='Casi per tampone',
         title='Casi per tamponi Italia - Confronto andamento inizio epidemia/giornaliero ultime 24h')
+    ax1.grid()
+    plt.show()
+
+    size = [n/2 for n in casih24]
+
+    fig2, ax1 = plt.subplots()
+    ax1.scatter(date, tamponih24, color='red', s=size, alpha=0.3, edgecolors='black')
+    ax1.legend(labels=['Casi giornalieri'])
+    ax1.set(xlabel='Giorni', ylabel='Tamponi Giornalieri',
+        title='Casi per tamponi Italia - Bubble chart giorni/tamponi/casi')
     ax1.grid()
     plt.show()
 
@@ -240,7 +257,7 @@ if toscanaCasiTampone == True:
         dat = elabCasiTampArTO(str(d),'https://raw.githubusercontent.com/pcm-dpc/COVID-19/master/dati-regioni/dpc-covid19-ita-regioni-2020040')
         calcCasiTampArTO(str(d),dat[0],dat[1],4)
     
-    fig2, ax1 = plt.subplots()
+    fig3, ax1 = plt.subplots()
     ax1.bar(date, tamponih24TO)
     ax1.legend(labels=['Tamponi giornalieri'])
     ax2 = ax1.twinx()
