@@ -15,6 +15,7 @@ import math
 import matplotlib.dates as mdates
 from matplotlib.backends.backend_pdf import PdfPages
 from datetime import datetime, timedelta
+from PIL import Image
 
 ##############################################################################################################
 #GLOBAL VARS
@@ -57,7 +58,7 @@ def plotGraph(x,y,xLabel,ylabel,title):
     plt.ylabel(ylabel)
     plt.xlabel(xLabel)
     plt.title (title)
-    plt.show()  
+    #plt.show()  
 
 #DEFINIZIONE DEL CALENDARIO: ELENCO DEI GIORNI DA TRATTARE PER LE X DEI VARI GRAFICI
 def makeCalendar():
@@ -187,7 +188,8 @@ if italiaCasiTampone == True:
     ax1.xaxis.set_major_locator(mdates.DayLocator(interval=1))
     ax1.xaxis.set_major_formatter(mdates.DateFormatter('%d-%m'))  
     ax1.xaxis.set_tick_params(rotation=90)
-    plt.show()
+    plt.savefig('/home/marco/covidGraphs/Casi_per_tamponi_Italia.png') 
+    #plt.show()
 
     #2-Casi per tamponi Italia - Bubble chart giorni/tamponi/casi
     size = [n/2 for n in casiIth24]
@@ -201,7 +203,7 @@ if italiaCasiTampone == True:
     ax1.xaxis.set_major_locator(mdates.DayLocator(interval=1))
     ax1.xaxis.set_major_formatter(mdates.DateFormatter('%d-%m'))  
     ax1.xaxis.set_tick_params(rotation=90)
-    plt.show()
+    ##plt.show()
 
     '''
     #3-Italia - Casi per tamponi (scala log.)
@@ -210,7 +212,7 @@ if italiaCasiTampone == True:
     ax1.set(xlabel='Giorni', ylabel='Casi per tamponi',
         title='Italia - Casi per tamponi (scala log.)')
     ax1.grid()
-    plt.show()
+    #plt.show()
     '''
 
     #4-Italia - Decessi ultime 24h
@@ -223,7 +225,7 @@ if italiaCasiTampone == True:
     ax1.xaxis.set_major_locator(mdates.DayLocator(interval=1))
     ax1.xaxis.set_major_formatter(mdates.DateFormatter('%d-%m'))  
     ax1.xaxis.set_tick_params(rotation=90)
-    plt.show()
+    #plt.show()
 
     #5-Italia - Decessi totale (scala log)
     fig32, ax1 = plt.subplots()
@@ -236,7 +238,7 @@ if italiaCasiTampone == True:
     ax1.xaxis.set_major_locator(mdates.DayLocator(interval=1))
     ax1.xaxis.set_major_formatter(mdates.DateFormatter('%d-%m'))  
     ax1.xaxis.set_tick_params(rotation=90)
-    plt.show()
+    #plt.show()
 
 ##############################################################################################################
 # TOSCANA - POSITIVI PER TAMPONI
@@ -342,7 +344,8 @@ if toscanaCasiTampone == True:
     ax1.xaxis.set_major_locator(mdates.DayLocator(interval=1))
     ax1.xaxis.set_major_formatter(mdates.DateFormatter('%d-%m'))  
     ax1.xaxis.set_tick_params(rotation=90)
-    plt.show()
+    plt.savefig('/home/marco/covidGraphs/Casi_per_tamponi_Toscana.png') 
+    ##plt.show()
     
     #2 - Casi per tamponi Toscana - Bubble chart giorni/tamponi/casi
     size = [n*7 for n in casih24TO]
@@ -356,7 +359,7 @@ if toscanaCasiTampone == True:
     ax1.xaxis.set_major_locator(mdates.DayLocator(interval=1))
     ax1.xaxis.set_major_formatter(mdates.DateFormatter('%d-%m'))  
     ax1.xaxis.set_tick_params(rotation=90)
-    plt.show()
+    #plt.show()
 
     #3 - Toscana - Decessi ultime 24h
     fig71, ax1 = plt.subplots()
@@ -368,7 +371,7 @@ if toscanaCasiTampone == True:
     ax1.xaxis.set_major_locator(mdates.DayLocator(interval=1))
     ax1.xaxis.set_major_formatter(mdates.DateFormatter('%d-%m'))  
     ax1.xaxis.set_tick_params(rotation=90)
-    plt.show()
+    #plt.show()
 
     #4 - Toscana - Decessi totali (scala log)
     fig72, ax1 = plt.subplots()
@@ -381,7 +384,7 @@ if toscanaCasiTampone == True:
     ax1.xaxis.set_major_locator(mdates.DayLocator(interval=1))
     ax1.xaxis.set_major_formatter(mdates.DateFormatter('%d-%m'))  
     ax1.xaxis.set_tick_params(rotation=90)
-    plt.show()
+    #plt.show()
 
 ##############################################################################################################
 #ITALIA - OSPEDALIZZATI/DIMESSI
@@ -465,7 +468,7 @@ if italiaTerapiaIntensiva == True:
     ax1.xaxis.set_major_formatter(mdates.DateFormatter('%d-%m'))  
     ax1.xaxis.set_tick_params(rotation=90)
     ax1.grid()
-    plt.show()
+    #plt.show()
 
     #Italia - Ricoveri terapia intensiva (scala log.)
     fig50, ax1 = plt.subplots()
@@ -477,7 +480,7 @@ if italiaTerapiaIntensiva == True:
     ax1.xaxis.set_major_formatter(mdates.DateFormatter('%d-%m'))  
     ax1.xaxis.set_tick_params(rotation=90)
     ax1.grid()
-    plt.show()
+    #plt.show()
 
     #Italia - Totale ospedalizzati
     fig51, ax1 = plt.subplots()
@@ -491,7 +494,8 @@ if italiaTerapiaIntensiva == True:
     ax1.xaxis.set_major_formatter(mdates.DateFormatter('%d-%m'))  
     ax1.xaxis.set_tick_params(rotation=90)
     ax1.grid()
-    plt.show()
+    plt.savefig('/home/marco/covidGraphs/Totale_Ospedalizzati_Italia.png')
+    #plt.show()
 
     #Italia - Deceduti/Dimessi/Ospedalizzati
     fig51, ax1 = plt.subplots()
@@ -507,7 +511,8 @@ if italiaTerapiaIntensiva == True:
     ax1.xaxis.set_major_formatter(mdates.DateFormatter('%d-%m'))  
     ax1.xaxis.set_tick_params(rotation=90)
     ax1.legend(labels=['Deceduti', 'Dimessi', 'Ospedalizzati', 'Terapie Intensive'])
-    plt.show()
+    plt.savefig('/home/marco/covidGraphs/Dec_Dim_Osp_Italia.png')
+    #plt.show()
 
     #Italia - Deceduti/Dimessi/Ospedalizzati ultime 24h
     fig50, ax1 = plt.subplots()
@@ -523,7 +528,8 @@ if italiaTerapiaIntensiva == True:
     ax1.xaxis.set_tick_params(rotation=90)
     ax1.grid()
     ax1.legend(labels=['Deceduti', 'Dimessi', 'Ospedalizzati', 'Terapie Int.'])
-    plt.show()
+    plt.savefig('/home/marco/covidGraphs/Dec_Dim_Osp_Italia_VARH24.png')
+    #plt.show()
 
 ##############################################################################################################
 # TOSCANA - OSPEDALIZZATI/DIMESSI
@@ -610,7 +616,7 @@ if toscanaTerapiaIntensiva == True:
     ax1.xaxis.set_major_locator(mdates.DayLocator(interval=1))
     ax1.xaxis.set_major_formatter(mdates.DateFormatter('%d-%m'))  
     ax1.xaxis.set_tick_params(rotation=90)
-    plt.show()
+    #plt.show()
 
     fig90, ax1 = plt.subplots()
     ax1.plot(date, terInToLog)
@@ -621,7 +627,7 @@ if toscanaTerapiaIntensiva == True:
     ax1.xaxis.set_major_locator(mdates.DayLocator(interval=1))
     ax1.xaxis.set_major_formatter(mdates.DateFormatter('%d-%m'))  
     ax1.xaxis.set_tick_params(rotation=90)
-    plt.show()
+    #plt.show()
 
     fig91, ax1 = plt.subplots()
     ax1.bar(date, ricoveratiTO)
@@ -634,7 +640,8 @@ if toscanaTerapiaIntensiva == True:
     ax1.xaxis.set_major_formatter(mdates.DateFormatter('%d-%m'))  
     ax1.xaxis.set_tick_params(rotation=90)
     ax1.grid()
-    plt.show()
+    plt.savefig('/home/marco/covidGraphs/Totale_Ospedalizzati_Toscana.png')
+    #plt.show()
 
     #Toscana - Deceduti/Dimessi/Ospedalizzati
     fig51, ax1 = plt.subplots()
@@ -650,7 +657,8 @@ if toscanaTerapiaIntensiva == True:
     ax1.xaxis.set_major_locator(mdates.DayLocator(interval=1))
     ax1.xaxis.set_major_formatter(mdates.DateFormatter('%d-%m'))  
     ax1.xaxis.set_tick_params(rotation=90)
-    plt.show()
+    plt.savefig('/home/marco/covidGraphs/Dec_Dim_Osp_Toscana.png')
+    #plt.show()
 
     #Toscana - Deceduti/Dimessi/Ospedalizzati giornalieri
     fig50, ax1 = plt.subplots()
@@ -666,7 +674,8 @@ if toscanaTerapiaIntensiva == True:
     ax1.xaxis.set_major_locator(mdates.DayLocator(interval=1))
     ax1.xaxis.set_major_formatter(mdates.DateFormatter('%d-%m'))  
     ax1.xaxis.set_tick_params(rotation=90)
-    plt.show()
+    plt.savefig('/home/marco/covidGraphs/Dec_Dim_Osp_Toscana_VARH24.png')
+    #plt.show()
 
 ##############################################################################################################
 # PRATO - CASI
@@ -723,14 +732,14 @@ if pratoCasi == True:
     ax1.set(xlabel='Giorni', ylabel='Casi',
         title='Prato - Casi - Scala log')
     ax1.grid()
-    plt.show()
+    #plt.show()
 
     fig100, ax1 = plt.subplots()
     ax1.plot(date, casPoLog)
     ax1.set(xlabel='Giorni', ylabel='Casi',
         title='Prato - Casi - Scala log')
     ax1.grid()
-    plt.show()
+    #plt.show()
     '''
 
 ##############################################################################################################
@@ -744,7 +753,7 @@ if comparazioni == True:
     ax1.set(xlabel='Giorni', ylabel='Casi',
         title='Casi per tamponi - Confronto andamento Nazionale/Toscana')
     ax1.grid()
-    plt.show()
+    #plt.show()
     
     fig120, ax1 = plt.subplots()
     ax1.plot(date, casiTampArItLog)
@@ -752,8 +761,41 @@ if comparazioni == True:
     ax1.set(xlabel='Giorni', ylabel='Casi',
         title='Casi per tamponi - Confronto andamento Nazionale/Toscana (scala log)')
     ax1.grid()
-    plt.show()
+    #plt.show()
 
 ##############################################################################################################
-#closing PDF
-#pdf.close()
+# MERGING PICTURES
+##############################################################################################################
+
+#Italia vs Toscana casi/tamponi
+im1 = Image.open('/home/marco/covidGraphs/Casi_per_tamponi_Italia.png')
+im2 = Image.open('/home/marco/covidGraphs/Casi_per_tamponi_Toscana.png')
+dst = Image.new('RGB', (im1.width, im1.height + im2.height))
+dst.paste(im1, (0, 0))
+dst.paste(im2, (0, im1.height))
+dst.save('/home/marco/covidGraphs/output/Casi_per_tamponi_ItaliaVSToscana.png')
+
+#Italia vs Toscana ospedalizzati (barre)
+im1 = Image.open('/home/marco/covidGraphs/Totale_Ospedalizzati_Italia.png')
+im2 = Image.open('/home/marco/covidGraphs/Totale_Ospedalizzati_Toscana.png')
+dst = Image.new('RGB', (im1.width, im1.height + im2.height))
+dst.paste(im1, (0, 0))
+dst.paste(im2, (0, im1.height))
+dst.save('/home/marco/covidGraphs/output/Totale_Ospedalizzati_ItaliaVSToscana.png')
+
+#Italia vs Toscana Deceduti/Dimessi/Ospedalizzati
+im1 = Image.open('/home/marco/covidGraphs/Dec_Dim_Osp_Italia.png')
+im2 = Image.open('/home/marco/covidGraphs/Dec_Dim_Osp_Toscana.png')
+dst = Image.new('RGB', (im1.width, im1.height + im2.height))
+dst.paste(im1, (0, 0))
+dst.paste(im2, (0, im1.height))
+dst.save('/home/marco/covidGraphs/output/Dec_Dim_Osp_ItaliaVSToscana.png')
+
+#Italia vs Toscana Deceduti/Dimessi/Ospedalizzati VARH24
+im1 = Image.open('/home/marco/covidGraphs/Dec_Dim_Osp_Italia_VARH24.png')
+im2 = Image.open('/home/marco/covidGraphs/Dec_Dim_Osp_Toscana_VARH24.png')
+dst = Image.new('RGB', (im1.width, im1.height + im2.height))
+dst.paste(im1, (0, 0))
+dst.paste(im2, (0, im1.height))
+dst.save('/home/marco/covidGraphs/output/Dec_Dim_Osp_ItaliaVSToscana_VARH24.png')
+
