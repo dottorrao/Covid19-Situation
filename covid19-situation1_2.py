@@ -20,7 +20,7 @@ from PIL import Image
 ##############################################################################################################
 #GLOBAL VARS
 dayM = [10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31] #marzo
-dayA = [1,2,3,4,5,6,7,8,9,10,11,12,13] #aprile
+dayA = [1,2,3,4,5,6,7,8,9,10,11,12,13,14] #aprile
 date=[]
 casi=0
 tamponi=0
@@ -484,11 +484,12 @@ if italiaTerapiaIntensiva == True:
 
     #Italia - Totale ospedalizzati
     fig51, ax1 = plt.subplots()
-    ax1.bar(date, ricoverati)
-    ax1.bar(date, terInArrIt, bottom = ricoverati)
-    ax1.set(xlabel='Giorni', ylabel='Totale ospedalizzati',
+    ax1.bar(date, ricoverati, color="orange")
+    ax1.bar(date, terInArrIt, color="purple")
+    ax1.bar(date, dimessiIt, bottom = ricoverati, color="green")
+    ax1.set(xlabel='Giorni', ylabel='Totale ospedalizzati/Dimessi',
         title='Italia - Totale ospedalizzati')
-    ax1.legend(labels=['Ricoverati con sintomi','Terapia Intensiva'])
+    ax1.legend(labels=['Ricoverati con sintomi','Terapia Intensiva','Dimessi'])
     ax1.xaxis.set_minor_locator(mdates.DayLocator(interval=1))
     ax1.xaxis.set_major_locator(mdates.DayLocator(interval=1))
     ax1.xaxis.set_major_formatter(mdates.DateFormatter('%d-%m'))  
@@ -630,11 +631,12 @@ if toscanaTerapiaIntensiva == True:
     #plt.show()
 
     fig91, ax1 = plt.subplots()
-    ax1.bar(date, ricoveratiTO)
-    ax1.bar(date, terInTo, bottom = ricoveratiTO)
+    ax1.bar(date, ricoveratiTO, color="orange")
+    ax1.bar(date, terInTo, color="purple")
+    ax1.bar(date, dimessiTO, bottom = ricoveratiTO, color="green")
     ax1.set(xlabel='Giorni', ylabel='Totale ospedalizzati',
         title='Toscana - Totale ospedalizzati')
-    ax1.legend(labels=['Ricoverati con sintomi','Terapia Intensiva'])
+    ax1.legend(labels=['Ricoverati con sintomi','Terapia Intensiva','Dimessi'])
     ax1.xaxis.set_minor_locator(mdates.DayLocator(interval=1))
     ax1.xaxis.set_major_locator(mdates.DayLocator(interval=1))
     ax1.xaxis.set_major_formatter(mdates.DateFormatter('%d-%m'))  
