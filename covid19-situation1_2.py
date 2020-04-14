@@ -12,13 +12,14 @@ import matplotlib.pyplot as plt
 import pandas as pd
 import numpy as np
 import math
+import matplotlib.dates as mdates
 from matplotlib.backends.backend_pdf import PdfPages
 from datetime import datetime, timedelta
 
 ##############################################################################################################
 #GLOBAL VARS
 dayM = [10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31] #marzo
-dayA = [1,2,3,4,5,6,7,8,9,10,11] #aprile
+dayA = [1,2,3,4,5,6,7,8,9,10,11,12,13] #aprile
 date=[]
 casi=0
 tamponi=0
@@ -32,7 +33,7 @@ italiaTerapiaIntensiva = True
 toscanaCasiTampone = True
 toscanaTerapiaIntensiva = True
 pratoCasi = True
-comparazioni = True
+comparazioni = False
 
 class bcolors:
     HEADER = '\033[95m'
@@ -144,20 +145,20 @@ if italiaCasiTampone == True:
         print (str(ct), end = '')
         print (" - casi rilevati:" + str(casi), end = '')
         print (" - tamponi effettuati:" + str(tamponi), end = '')
-        print (" - rapporto ultime 24h:" + str(cth24), end = ''  )
-        print (" - decessi ultime 24h:" + str(decIth24) )
+        print (" - rapporto giornaliero:" + str(cth24), end = ''  )
+        print (" - decessi giornlieri:" + str(decIth24) )
         
         #salvataggio valori appena processati per differenza giorno precedente
         casiTampOld = [casi,tamponi]
         casiOld = casi
         decedutiOld = deceduti
         
-    print (f"{bcolors.WARNING}ITALIA - POSITIVI PER TAMPONI EFFETTUATI{bcolors.ENDC}")
+    print (f"{bcolors.WARNING}ITALIA - POSITIVI PER TAMPONI / DECESSI GIORNALIERI{bcolors.ENDC}")
 
     #variabili per salvataggio valori giorno precedente
     casiTampOld = [9172,53826]  #inizializzo ai dati del 9 marzo
     casiOld = 9172              #inizializzo ai dati del 9 marzo
-    decedutiOld = 1             #da inizializzare ai dati del 9 marzo
+    decedutiOld = 463           #da inizializzare ai dati del 9 marzo
 
     for d in dayM:
         dat = elabCasiTampArIt(str(d),'https://raw.githubusercontent.com/pcm-dpc/COVID-19/master/dati-andamento-nazionale/dpc-covid19-ita-andamento-nazionale-202003')
@@ -178,10 +179,14 @@ if italiaCasiTampone == True:
     ax2.plot(date, casiTampArIt,color='tab:red')
     ax2.legend(labels=['Casi/Tamponi h24', 'Casi/Tamponi da inizio'])
     ax1.set(xlabel='Giorni', ylabel='Tamponi Giornalieri',
-        title='Casi per tamponi Italia - Confronto andamento inizio epidemia/giornaliero ultime 24h')
+        title='Casi per tamponi Italia - Confronto andamento inizio epidemia/giornaliero')
     ax2.set(xlabel='Giorni', ylabel='Casi per tampone',
-        title='Casi per tamponi Italia - Confronto andamento inizio epidemia/giornaliero ultime 24h')
+        title='Casi per tamponi Italia - Confronto andamento inizio epidemia/giornaliero')
     ax1.grid()
+    ax1.xaxis.set_minor_locator(mdates.DayLocator(interval=1))
+    ax1.xaxis.set_major_locator(mdates.DayLocator(interval=1))
+    ax1.xaxis.set_major_formatter(mdates.DateFormatter('%d-%m'))  
+    ax1.xaxis.set_tick_params(rotation=90)
     plt.show()
 
     #2-Casi per tamponi Italia - Bubble chart giorni/tamponi/casi
@@ -192,8 +197,13 @@ if italiaCasiTampone == True:
     ax1.set(xlabel='Giorni', ylabel='Tamponi Giornalieri',
         title='Casi per tamponi Italia - Bubble chart giorni/tamponi/casi')
     ax1.grid()
+    ax1.xaxis.set_minor_locator(mdates.DayLocator(interval=1))
+    ax1.xaxis.set_major_locator(mdates.DayLocator(interval=1))
+    ax1.xaxis.set_major_formatter(mdates.DateFormatter('%d-%m'))  
+    ax1.xaxis.set_tick_params(rotation=90)
     plt.show()
 
+    '''
     #3-Italia - Casi per tamponi (scala log.)
     fig30, ax1 = plt.subplots()
     ax1.plot(date, casiTampArItLog)
@@ -201,13 +211,18 @@ if italiaCasiTampone == True:
         title='Italia - Casi per tamponi (scala log.)')
     ax1.grid()
     plt.show()
+    '''
 
     #4-Italia - Decessi ultime 24h
     fig31, ax1 = plt.subplots()
     ax1.bar(date, decedutiIth24)
     ax1.set(xlabel='Giorni', ylabel='Deceduti',
-        title='Italia - Decessi ultime 24h')
+        title='Italia - Decessi giorno')
     ax1.grid()
+    ax1.xaxis.set_minor_locator(mdates.DayLocator(interval=1))
+    ax1.xaxis.set_major_locator(mdates.DayLocator(interval=1))
+    ax1.xaxis.set_major_formatter(mdates.DateFormatter('%d-%m'))  
+    ax1.xaxis.set_tick_params(rotation=90)
     plt.show()
 
     #5-Italia - Decessi totale (scala log)
@@ -217,10 +232,14 @@ if italiaCasiTampone == True:
     ax1.set(xlabel='Giorni', ylabel='Deceduti',
         title='Italia - Decessi totale (scala log)')
     ax1.grid()
+    ax1.xaxis.set_minor_locator(mdates.DayLocator(interval=1))
+    ax1.xaxis.set_major_locator(mdates.DayLocator(interval=1))
+    ax1.xaxis.set_major_formatter(mdates.DateFormatter('%d-%m'))  
+    ax1.xaxis.set_tick_params(rotation=90)
     plt.show()
 
 ##############################################################################################################
-# TOSCANA - CASI PER TAMPONI - DECEDUTI
+# TOSCANA - POSITIVI PER TAMPONI
 ##############################################################################################################
 if toscanaCasiTampone == True:
 
@@ -286,14 +305,14 @@ if toscanaCasiTampone == True:
         print (str(ct), end = '')
         print (" - casi rilevati:" + str(casi), end = '')
         print (" - tamponi effettuati:" + str(tamponi), end = '')
-        print (" - rapporto ultime 24h:" + str(cth24), end = ''  )
-        print (" - decessi ultime 24h:" + str(decessih24) )
+        print (" - rapporto giornaliero:" + str(cth24), end = '')
+        print (" - decessi giornalieri:" + str(decessih24) )
 
         casiTampOldTO = [casi,tamponi]
         casiOldTO = casi
         decessiOld = decessi
 
-    print (f"{bcolors.WARNING}TOSCANA- POSITIVI PER TAMPONI EFFETTUATI{bcolors.ENDC}" )
+    print (f"{bcolors.WARNING}TOSCANA - POSITIVI PER TAMPONI / DECESSI GIORNALIERI{bcolors.ENDC}" )
 
     casiTampOldTO = [208,2018]  #inizializzo ai dati del 9 marzo per la toscana
     casiOldTO = 1               #da inizializzare
@@ -315,10 +334,14 @@ if toscanaCasiTampone == True:
     ax2.plot(date, casiTampArTO,color='tab:red')
     ax2.legend(labels=['Casi/Tamponi h24', 'Casi/Tamponi da inizio'])
     ax1.set(xlabel='Giorni', ylabel='Tamponi Giornalieri',
-        title='Casi per tamponi Toscana - Confronto andamento inizio epidemia/giornaliero ultime 24h')
+        title='Casi per tamponi Toscana - Confronto andamento inizio epidemia/giornaliero')
     ax2.set(xlabel='Giorni', ylabel='Casi per tampone',
-        title='Casi per tamponi Toscana - Confronto andamento inizio epidemia/giornaliero ultime 24h')
+        title='Casi per tamponi Toscana - Confronto andamento inizio epidemia/giornaliero')
     ax1.grid()
+    ax1.xaxis.set_minor_locator(mdates.DayLocator(interval=1))
+    ax1.xaxis.set_major_locator(mdates.DayLocator(interval=1))
+    ax1.xaxis.set_major_formatter(mdates.DateFormatter('%d-%m'))  
+    ax1.xaxis.set_tick_params(rotation=90)
     plt.show()
     
     #2 - Casi per tamponi Toscana - Bubble chart giorni/tamponi/casi
@@ -329,14 +352,22 @@ if toscanaCasiTampone == True:
     ax1.set(xlabel='Giorni', ylabel='Tamponi Giornalieri',
         title='Casi per tamponi Toscana - Bubble chart giorni/tamponi/casi')
     ax1.grid()
+    ax1.xaxis.set_minor_locator(mdates.DayLocator(interval=1))
+    ax1.xaxis.set_major_locator(mdates.DayLocator(interval=1))
+    ax1.xaxis.set_major_formatter(mdates.DateFormatter('%d-%m'))  
+    ax1.xaxis.set_tick_params(rotation=90)
     plt.show()
 
     #3 - Toscana - Decessi ultime 24h
     fig71, ax1 = plt.subplots()
     ax1.bar(date, dech24TO)
     ax1.set(xlabel='Giorni', ylabel='Deceduti',
-        title='Toscana - Decessi ultime 24h')
+        title='Toscana - Decessi giornalieri')
     ax1.grid()
+    ax1.xaxis.set_minor_locator(mdates.DayLocator(interval=1))
+    ax1.xaxis.set_major_locator(mdates.DayLocator(interval=1))
+    ax1.xaxis.set_major_formatter(mdates.DateFormatter('%d-%m'))  
+    ax1.xaxis.set_tick_params(rotation=90)
     plt.show()
 
     #4 - Toscana - Decessi totali (scala log)
@@ -346,10 +377,14 @@ if toscanaCasiTampone == True:
     ax1.set(xlabel='Giorni', ylabel='Deceduti',
         title='Toscana - Decessi totali (scala log)')
     ax1.grid()
+    ax1.xaxis.set_minor_locator(mdates.DayLocator(interval=1))
+    ax1.xaxis.set_major_locator(mdates.DayLocator(interval=1))
+    ax1.xaxis.set_major_formatter(mdates.DateFormatter('%d-%m'))  
+    ax1.xaxis.set_tick_params(rotation=90)
     plt.show()
 
 ##############################################################################################################
-#ITALIA - OSPEDALIZZATI
+#ITALIA - OSPEDALIZZATI/DIMESSI
 ##############################################################################################################
 if italiaTerapiaIntensiva == True:
     def elabCasiTerInITA(tempS,url):
@@ -361,14 +396,20 @@ if italiaTerapiaIntensiva == True:
         data.close()
         mystrSPLIT = mystr.split(",")
         terapianIn = int(mystrSPLIT[17])
-        ricoverati = int(mystrSPLIT[16])   
-        return [ricoverati,terapianIn]
+        ricoverati = int(mystrSPLIT[16])
+        dimessi = int(mystrSPLIT[23])   
+        return [ricoverati,terapianIn,dimessi]
 
     def calcCasiTerInITA(day,dat,mese):
         global terInOLd
         global ricoverati
+        global dimessiIt
+        global ospedalizzatiOld
+        global terItOLd
+        global dimessiItOld
         ricov=dat[0]
         terIn=dat[1]
+        dimessi=dat[2]
         month = ""
         if mese == 3:
             month = "Marzo"
@@ -377,18 +418,35 @@ if italiaTerapiaIntensiva == True:
         terInArrIt.append (terIn)
         ricoverati.append (ricov)
         terInArrItLog.append ( math.log10(int(terIn)) )
+        ospedalizzatiIt.append (terIn+ricov)
+        ospedalizzatiIth24.append ( terIn+ricov-ospedalizzatiOld )
+        dimessiIt.append(dimessi)
+        dimessiIth24.append(dimessi-dimessiItOld)
         diff = ( terIn - terInOLd )
+        terInArrIth24.append (diff)
         print (day + ' ' + month + ' : ' + 'Ricoverati con sintomi:' + str(ricov), end = '')
         print (' - Terapia intensiva: ' + str(terIn), end = '')
+        print (' - Totale ospedalizzati: ' + str(terIn+ricov), end = '')
+        print (' - Dimessi: ' + str(dimessi), end = '')
         print (' - Incr.Terapia Intensiva: ' + str(diff) )
         terInOLd = terIn
+        ospedalizzatiOld = terIn+ricov
+        dimessiItOld = dimessi
 
-    print (f"{bcolors.WARNING}ITALIA - OSPEDALIZZATI{bcolors.ENDC}" )
+    print (f"{bcolors.WARNING}ITALIA - OSPEDALIZZATI/DIMESSI{bcolors.ENDC}" )
 
     terInOLd = 0
+    ospedalizzatiOld = 5049
     terInArrIt=[]
     ricoverati=[]
     terInArrItLog=[]
+    ospedalizzatiIt=[]
+    ospedalizzatiIth24=[]
+    dimessiIt=[]
+    dimessiIth24=[]
+    terInArrIth24=[]
+    dimessiItOld = 724
+
     for d in dayM:
         dat = elabCasiTerInITA(str(d),'https://raw.githubusercontent.com/pcm-dpc/COVID-19/master/dati-andamento-nazionale/dpc-covid19-ita-andamento-nazionale-202003')
         calcCasiTerInITA(str(d),dat,3)
@@ -397,31 +455,78 @@ if italiaTerapiaIntensiva == True:
         dat = elabCasiTerInITA(str(d),'https://raw.githubusercontent.com/pcm-dpc/COVID-19/master/dati-andamento-nazionale/dpc-covid19-ita-andamento-nazionale-202004')
         calcCasiTerInITA(str(d),dat,4)
     
+    #Italia - Ricoveri terapia intensiva
     fig40, ax1 = plt.subplots()
     ax1.plot(date, terInArrIt)
     ax1.set(xlabel='Giorni', ylabel='Terapie Intensive',
         title='Italia - Ricoveri terapia intensiva')
+    ax1.xaxis.set_minor_locator(mdates.DayLocator(interval=1))
+    ax1.xaxis.set_major_locator(mdates.DayLocator(interval=1))
+    ax1.xaxis.set_major_formatter(mdates.DateFormatter('%d-%m'))  
+    ax1.xaxis.set_tick_params(rotation=90)
     ax1.grid()
     plt.show()
 
+    #Italia - Ricoveri terapia intensiva (scala log.)
     fig50, ax1 = plt.subplots()
     ax1.plot(date, terInArrItLog)
     ax1.set(xlabel='Giorni', ylabel='Terapie Intensive',
         title='Italia - Ricoveri terapia intensiva (scala log.)')
+    ax1.xaxis.set_minor_locator(mdates.DayLocator(interval=1))
+    ax1.xaxis.set_major_locator(mdates.DayLocator(interval=1))
+    ax1.xaxis.set_major_formatter(mdates.DateFormatter('%d-%m'))  
+    ax1.xaxis.set_tick_params(rotation=90)
     ax1.grid()
     plt.show()
 
-    p51 = plt.bar(date, ricoverati)
-    p52 = plt.bar(date, terInArrIt, bottom = ricoverati)
-    plt.legend(['Ricoverati','Terapia Intensiva'])
-    plt.xlabel('Giorni') 
-    plt.ylabel('Totale ospedalizzati') 
-    plt.title('Italia - Totale ospedalizzati')
-    plt.grid()
+    #Italia - Totale ospedalizzati
+    fig51, ax1 = plt.subplots()
+    ax1.bar(date, ricoverati)
+    ax1.bar(date, terInArrIt, bottom = ricoverati)
+    ax1.set(xlabel='Giorni', ylabel='Totale ospedalizzati',
+        title='Italia - Totale ospedalizzati')
+    ax1.legend(labels=['Ricoverati con sintomi','Terapia Intensiva'])
+    ax1.xaxis.set_minor_locator(mdates.DayLocator(interval=1))
+    ax1.xaxis.set_major_locator(mdates.DayLocator(interval=1))
+    ax1.xaxis.set_major_formatter(mdates.DateFormatter('%d-%m'))  
+    ax1.xaxis.set_tick_params(rotation=90)
+    ax1.grid()
+    plt.show()
+
+    #Italia - Deceduti/Dimessi/Ospedalizzati
+    fig51, ax1 = plt.subplots()
+    ax1.plot(date, decIt, color="black")
+    ax1.plot(date, dimessiIt, color="green")
+    ax1.plot(date, ospedalizzatiIt, color="orange")
+    ax1.plot(date, terInArrIt, color="purple")
+    ax1.set(xlabel='Giorni', ylabel='',
+        title='Italia - Deceduti/Dimessi/Ospedalizzati Totali')
+    ax1.grid()
+    ax1.xaxis.set_minor_locator(mdates.DayLocator(interval=1))
+    ax1.xaxis.set_major_locator(mdates.DayLocator(interval=1))
+    ax1.xaxis.set_major_formatter(mdates.DateFormatter('%d-%m'))  
+    ax1.xaxis.set_tick_params(rotation=90)
+    ax1.legend(labels=['Deceduti', 'Dimessi', 'Ospedalizzati', 'Terapie Intensive'])
+    plt.show()
+
+    #Italia - Deceduti/Dimessi/Ospedalizzati ultime 24h
+    fig50, ax1 = plt.subplots()
+    ax1.plot(date, decedutiIth24, color="black")
+    ax1.plot(date, dimessiIth24, color="green")
+    ax1.plot(date, ospedalizzatiIth24, color="orange")
+    ax1.plot(date, terInArrIth24, color="purple")
+    ax1.set(xlabel='Giorni', ylabel='',
+        title='Italia - Deceduti/Dimessi/Ospedalizzati variazione giornaliera')
+    ax1.xaxis.set_minor_locator(mdates.DayLocator(interval=1))
+    ax1.xaxis.set_major_locator(mdates.DayLocator(interval=1))
+    ax1.xaxis.set_major_formatter(mdates.DateFormatter('%d-%m'))  
+    ax1.xaxis.set_tick_params(rotation=90)
+    ax1.grid()
+    ax1.legend(labels=['Deceduti', 'Dimessi', 'Ospedalizzati', 'Terapie Int.'])
     plt.show()
 
 ##############################################################################################################
-# TOSCANA - OSPEDALIZZATI
+# TOSCANA - OSPEDALIZZATI/DIMESSI
 ##############################################################################################################
 if toscanaTerapiaIntensiva == True:
     def elabCasiTerInTO(tempS,url):
@@ -435,13 +540,21 @@ if toscanaTerapiaIntensiva == True:
         regionSplit = mySplit[17].split(",")
         terapianIn = int (regionSplit[7])
         ricoverati = int(regionSplit[8])
-        return [terapianIn,ricoverati]
+        dimessi = int(regionSplit[13])
+        return [terapianIn,ricoverati,dimessi]
         
     def calcCasiTerInTO(day,dat,mese):
         global terInOLd
         global ricoveratiTO
+        global dimessiTO
+        global ospedalizzatiTO
+        global ospedalizzatiTOh24
+        global dimessiTOh24
+        global ospedalizzatiTOOld
+        global dimessiTOOld
         terIn = dat[0]
         ricoverati = dat[1]
+        dimessi = dat[2]
         month = ""
         if mese == 3:
             month = "Marzo"
@@ -450,19 +563,36 @@ if toscanaTerapiaIntensiva == True:
         terInTo.append (terIn)
         terInToLog.append ( math.log10(int(terIn)) )
         ricoveratiTO.append (ricoverati)
+        dimessiTO.append (dimessi)
+        ospedalizzatiTO.append (ricoverati+terIn)
         diff = ( terIn - terInOLd )
+        terInArrToh24.append (diff)
+        ospedalizzatiTOh24.append (ricoverati+terIn-ospedalizzatiTOOld)
+        dimessiTOh24.append (dimessi-dimessiTOOld)
         #print (day + ' ' + month + ' : ' + str(terIn), end = '')
         #print (" - Differenza giorno prec: " + str(diff) )
         print (day + ' ' + month + ' : ' + 'Ricoverati con sintomi:' + str(ricoverati), end = '')
         print (' - Terapia intensiva: ' + str(terIn), end = '')
+        print (' - Totale ospedalizzati: ' + str(terIn+ricoverati), end = '')
+        print (' - Dimessi: ' + str(dimessi), end = '')
         print (' - Incr.Terapia Intensiva: ' + str(diff) )
         terInOLd = terIn
+        ospedalizzatiTOOld = ricoverati+terIn
+        dimessiTOOld = dimessi
 
-    print (f"{bcolors.WARNING}TOSCANA - INCREMENTO RICOVERATI TERAPIA INTENSIVA{bcolors.ENDC}" )
+    print (f"{bcolors.WARNING}TOSCANA - OSPEDALIZZATI/DIMESSI{bcolors.ENDC}" )
     terInOLd = 0
     terInTo=[]
     terInToLog=[]
     ricoveratiTO=[]
+    dimessiTO=[]
+    ospedalizzatiTO=[]
+    ospedalizzatiTOh24=[]
+    dimessiTOh24=[]
+    ospedalizzatiTOOld=0
+    dimessiTOOld=0
+    terInArrToh24=[]
+    
     for d in dayM:
         dat = elabCasiTerInTO(str(d),'https://raw.githubusercontent.com/pcm-dpc/COVID-19/master/dati-regioni/dpc-covid19-ita-regioni-202003')
         calcCasiTerInTO(str(d),dat,3)
@@ -476,6 +606,10 @@ if toscanaTerapiaIntensiva == True:
     ax1.set(xlabel='Giorni', ylabel='Terapie Intensive',
         title='Toscana - Ricoveri terapia intensiva')
     ax1.grid()
+    ax1.xaxis.set_minor_locator(mdates.DayLocator(interval=1))
+    ax1.xaxis.set_major_locator(mdates.DayLocator(interval=1))
+    ax1.xaxis.set_major_formatter(mdates.DateFormatter('%d-%m'))  
+    ax1.xaxis.set_tick_params(rotation=90)
     plt.show()
 
     fig90, ax1 = plt.subplots()
@@ -483,15 +617,55 @@ if toscanaTerapiaIntensiva == True:
     ax1.set(xlabel='Giorni', ylabel='Terapie Intensive',
         title='Toscana - Ricoveri terapia intensiva - Scala log')
     ax1.grid()
+    ax1.xaxis.set_minor_locator(mdates.DayLocator(interval=1))
+    ax1.xaxis.set_major_locator(mdates.DayLocator(interval=1))
+    ax1.xaxis.set_major_formatter(mdates.DateFormatter('%d-%m'))  
+    ax1.xaxis.set_tick_params(rotation=90)
     plt.show()
 
-    p91 = plt.bar(date, ricoveratiTO)
-    p92 = plt.bar(date, terInTo, bottom = ricoveratiTO) 
-    plt.legend(['Ricoverati','Terapia Intensiva'])
-    plt.xlabel('Giorni') 
-    plt.ylabel('Totale ospedalizzati') 
-    plt.title('Toscana - Totale ospedalizzati')
-    plt.grid()
+    fig91, ax1 = plt.subplots()
+    ax1.bar(date, ricoveratiTO)
+    ax1.bar(date, terInTo, bottom = ricoveratiTO)
+    ax1.set(xlabel='Giorni', ylabel='Totale ospedalizzati',
+        title='Toscana - Totale ospedalizzati')
+    ax1.legend(labels=['Ricoverati con sintomi','Terapia Intensiva'])
+    ax1.xaxis.set_minor_locator(mdates.DayLocator(interval=1))
+    ax1.xaxis.set_major_locator(mdates.DayLocator(interval=1))
+    ax1.xaxis.set_major_formatter(mdates.DateFormatter('%d-%m'))  
+    ax1.xaxis.set_tick_params(rotation=90)
+    ax1.grid()
+    plt.show()
+
+    #Toscana - Deceduti/Dimessi/Ospedalizzati
+    fig51, ax1 = plt.subplots()
+    ax1.plot(date, decTO, color="black")
+    ax1.plot(date, dimessiTO, color="green")
+    ax1.plot(date, ospedalizzatiTO, color="orange")
+    ax1.plot(date, terInTo, color="purple")
+    ax1.set(xlabel='Giorni', ylabel='',
+        title='Toscana - Deceduti/Dimessi/Ospedalizzati Totali')
+    ax1.grid()
+    ax1.legend(labels=['Deceduti', 'Dimessi', 'Ospedalizzati', 'Terapie Intensive'])
+    ax1.xaxis.set_minor_locator(mdates.DayLocator(interval=1))
+    ax1.xaxis.set_major_locator(mdates.DayLocator(interval=1))
+    ax1.xaxis.set_major_formatter(mdates.DateFormatter('%d-%m'))  
+    ax1.xaxis.set_tick_params(rotation=90)
+    plt.show()
+
+    #Toscana - Deceduti/Dimessi/Ospedalizzati giornalieri
+    fig50, ax1 = plt.subplots()
+    ax1.plot(date, dech24TO, color="black")
+    ax1.plot(date, dimessiTOh24, color="green")
+    ax1.plot(date, ospedalizzatiTOh24, color="orange")
+    ax1.plot(date, terInArrToh24, color="purple")
+    ax1.set(xlabel='Giorni', ylabel='',
+        title='Toscana - Deceduti/Dimessi/Ospedalizzati variazione giornalieri')
+    ax1.grid()
+    ax1.legend(labels=['Deceduti', 'Dimessi', 'Ospedalizzati', 'Terapie Intensive'])
+    ax1.xaxis.set_minor_locator(mdates.DayLocator(interval=1))
+    ax1.xaxis.set_major_locator(mdates.DayLocator(interval=1))
+    ax1.xaxis.set_major_formatter(mdates.DateFormatter('%d-%m'))  
+    ax1.xaxis.set_tick_params(rotation=90)
     plt.show()
 
 ##############################################################################################################
@@ -543,6 +717,7 @@ if pratoCasi == True:
         dat = elabCasiPO(str(d),'https://raw.githubusercontent.com/pcm-dpc/COVID-19/master/dati-province/dpc-covid19-ita-province-202004')
         calcCasiPO(str(d),dat,4)
 
+    '''
     fig90, ax1 = plt.subplots()
     ax1.plot(date, casPo)
     ax1.set(xlabel='Giorni', ylabel='Casi',
@@ -556,6 +731,7 @@ if pratoCasi == True:
         title='Prato - Casi - Scala log')
     ax1.grid()
     plt.show()
+    '''
 
 ##############################################################################################################
 # GRAFICI COMPARATIVI
