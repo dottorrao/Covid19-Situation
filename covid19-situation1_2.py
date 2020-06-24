@@ -22,10 +22,12 @@ from matplotlib.dates import date2num
 #GLOBAL VARS
 dayM = [10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31] #marzo
 dayA = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30] #aprile
-dayMay = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15] #maggio
+dayMay = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31] #maggio
+dayJun = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23]#Giugno
 date=[]
 casi=0
 tamponi=0
+regione = ""
 
 #out_pdf = r'/Users/marco/Desktop/image.pdf'
 #pdf = matplotlib.backends.backend_pdf.PdfPages(out_pdf)
@@ -74,6 +76,8 @@ def makeCalendar():
         date.append(datetime(year=2020, month=4, day=d, hour = 18, minute = 30, second = 0))
     for d in dayMay:
         date.append(datetime(year=2020, month=5, day=d, hour = 18, minute = 30, second = 0))
+    for d in dayJun:
+        date.append(datetime(year=2020, month=6, day=d, hour = 18, minute = 30, second = 0))
 
 ##############################################################################################################
 
@@ -123,6 +127,8 @@ if italiaCasiTampone == True:
             month = "Arile" 
         elif mese == 5:
             month = "Maggio" 
+        elif mese == 6:
+            month = "Giugno" 
         #casi per tamponi
         ct = float( (format(round(casi/tamponi,5),'.5f')) )
         #casi per tamponi h24
@@ -152,7 +158,9 @@ if italiaCasiTampone == True:
         print (day + ' ' + month + ' : ', end = '')
         print (str(ct), end = '')
         print (" - casi rilevati:" + str(casi), end = '')
+        print (" - casi h24:" + str( int(casi)-int(casiOld) ), end = '' )
         print (" - tamponi effettuati:" + str(tamponi), end = '')
+        print (" - tamponi h24:" + str(tamponi-casiTampOld[1]), end = '')
         print (" - rapporto giornaliero:" + str(cth24), end = ''  )
         print (" - decessi giornlieri:" + str(decIth24) )
         
@@ -179,6 +187,16 @@ if italiaCasiTampone == True:
     for d in dayMay:
         dat = elabCasiTampArIt(str(d),'https://raw.githubusercontent.com/pcm-dpc/COVID-19/master/dati-andamento-nazionale/dpc-covid19-ita-andamento-nazionale-202005')
         calcCasiTampone(str(d),dat,5)
+
+    for d in dayJun:
+        dat = elabCasiTampArIt(str(d),'https://raw.githubusercontent.com/pcm-dpc/COVID-19/master/dati-andamento-nazionale/dpc-covid19-ita-andamento-nazionale-202006')
+        #correzione casi rilevari
+        if ( d >= 12 ):
+            dat[0]=dat[0]+230
+        if ( d >= 19):
+            dat[0]=dat[0]+397
+            dat[0]=dat[0]+2
+        calcCasiTampone(str(d),dat,6)
 
     ## GRAFICI ##
 
@@ -275,8 +293,8 @@ if toscanaCasiTampone == True:
         mystr = myData.decode("utf8")
         data.close()
         mySplit = mystr.splitlines()
-        regionSplit = mySplit[10].split(",") #lombardia
-        #regionSplit = mySplit[17].split(",") #toscana
+        #regionSplit = mySplit[10].split(",") #lombardia
+        regionSplit = mySplit[17].split(",") #toscana
         #regionSplit = mySplit[21].split(",") #veneto
         casi = int(regionSplit[15])
         tamponi = int(regionSplit[16])
@@ -298,6 +316,8 @@ if toscanaCasiTampone == True:
             month = "Aprile"
         elif mese == 5:
             month = "Maggio"
+        elif mese == 6:
+            month = "Giugno"
         ct = float( (format(round(casi/tamponi,5),'.5f')) )
         cth24 = float( (format(round( (casi-casiTampOldTO[0])/(tamponi-casiTampOldTO[1]),5),'.5f')) )
         #1-tamponi ultime 24h
@@ -323,7 +343,9 @@ if toscanaCasiTampone == True:
         print (day + ' ' + month + ' : ', end = '')
         print (str(ct), end = '')
         print (" - casi rilevati:" + str(casi), end = '')
+        print (" - casi rilevati h24:" + str( int(casi)-int(casiOldTO) ), end = '')
         print (" - tamponi effettuati:" + str(tamponi), end = '')
+        print (" - tamponi effettuati h24:" + str( tamponi-casiTampOldTO[1] ), end = '')
         print (" - rapporto giornaliero:" + str(cth24), end = '')
         print (" - decessi giornalieri:" + str(decessih24) )
 
@@ -347,6 +369,10 @@ if toscanaCasiTampone == True:
     for d in dayMay:
         dat = elabCasiTampArTO(str(d),'https://raw.githubusercontent.com/pcm-dpc/COVID-19/master/dati-regioni/dpc-covid19-ita-regioni-202005')
         calcCasiTampArTO(str(d),dat,5)
+    
+    for d in dayJun:
+        dat = elabCasiTampArTO(str(d),'https://raw.githubusercontent.com/pcm-dpc/COVID-19/master/dati-regioni/dpc-covid19-ita-regioni-202006')
+        calcCasiTampArTO(str(d),dat,6)
 
     #1 - Casi per tampone Toscana
     fig60, ax1 = plt.subplots()
@@ -443,6 +469,8 @@ if italiaTerapiaIntensiva == True:
             month = "Arile" 
         elif mese == 5:
             month = "Maggio" 
+        elif mese == 6:
+            month = "Giugno" 
         terInArrIt.append (terIn)
         ricoverati.append (ricov)
         terInArrItLog.append ( math.log10(int(terIn)) )
@@ -490,6 +518,10 @@ if italiaTerapiaIntensiva == True:
     for d in dayMay:
         dat = elabCasiTerInITA(str(d),'https://raw.githubusercontent.com/pcm-dpc/COVID-19/master/dati-andamento-nazionale/dpc-covid19-ita-andamento-nazionale-202005')
         calcCasiTerInITA(str(d),dat,5)
+     
+    for d in dayJun:
+        dat = elabCasiTerInITA(str(d),'https://raw.githubusercontent.com/pcm-dpc/COVID-19/master/dati-andamento-nazionale/dpc-covid19-ita-andamento-nazionale-202006')
+        calcCasiTerInITA(str(d),dat,6)
 
     #Italia - Ricoveri terapia intensiva
     fig40, ax1 = plt.subplots()
@@ -534,7 +566,7 @@ if italiaTerapiaIntensiva == True:
     #Italia - Deceduti/Dimessi/Ospedalizzati
     fig52, ax1 = plt.subplots()
     ax1.plot(date, decIt, color="black")
-    ax1.plot(date, dimessiIt, color="green")
+    #ax1.plot(date, dimessiIt, color="green")
     ax1.plot(date, ospedalizzatiIt, color="orange")
     ax1.plot(date, terInArrIt, color="purple")
     ax1.set(xlabel='Giorni', ylabel='',
@@ -544,14 +576,14 @@ if italiaTerapiaIntensiva == True:
     ax1.xaxis.set_major_locator(mdates.DayLocator(interval=5))
     ax1.xaxis.set_major_formatter(mdates.DateFormatter('%d-%m'))  
     ax1.xaxis.set_tick_params(rotation=90)
-    ax1.legend(labels=['Deceduti', 'Dimessi', 'Ospedalizzati', 'Terapie Intensive'])
+    ax1.legend(labels=['Deceduti', 'Ospedalizzati', 'Terapie Intensive'])
     plt.savefig('/home/marco/covidGraphs/Dec_Dim_Osp_Italia.png')
     #plt.show()
 
     #Italia - Deceduti/Dimessi/Ospedalizzati ultime 24h
     fig53, ax1 = plt.subplots()
     ax1.plot(date, decedutiIth24, color="black")
-    ax1.plot(date, dimessiIth24, color="green")
+    #ax1.plot(date, dimessiIth24, color="green")
     ax1.plot(date, ospedalizzatiIth24, color="orange")
     ax1.plot(date, terInArrIth24, color="purple")
     ax1.set(xlabel='Giorni', ylabel='',
@@ -561,7 +593,7 @@ if italiaTerapiaIntensiva == True:
     ax1.xaxis.set_major_formatter(mdates.DateFormatter('%d-%m'))  
     ax1.xaxis.set_tick_params(rotation=90)
     ax1.grid()
-    ax1.legend(labels=['Deceduti', 'Dimessi', 'Ospedalizzati', 'Terapie Int.'])
+    ax1.legend(labels=['Deceduti', 'Ospedalizzati', 'Terapie Int.'])
     plt.savefig('/home/marco/covidGraphs/Dec_Dim_Osp_Italia_VARH24.png')
     #plt.show()
 
@@ -622,7 +654,7 @@ if italiaTerapiaIntensiva == True:
 ##############################################################################################################
 # TOSCANA - OSPEDALIZZATI/DIMESSI
 ##############################################################################################################
-regione = ""
+
 if toscanaTerapiaIntensiva == True:
     def elabCasiTerInTO(tempS,url):
         if ( int(tempS)<10 ):
@@ -632,11 +664,13 @@ if toscanaTerapiaIntensiva == True:
         mystr = myData.decode("utf8")
         data.close()
         mySplit = mystr.splitlines()
-        regionSplit = mySplit[17].split(",")
+        
+        regionSplit = mySplit[17].split(",") #toscana
+        #regionSplit = mySplit[10].split(",") #lombardia
+
         terapianIn = int (regionSplit[7])
         ricoverati = int(regionSplit[8])
         dimessi = int(regionSplit[13])
-        regione = regionSplit[4]
         return [terapianIn,ricoverati,dimessi]
         
     def calcCasiTerInTO(day,dat,mese):
@@ -658,6 +692,8 @@ if toscanaTerapiaIntensiva == True:
             month = "Arile" 
         elif mese == 5:
             month = "Maggio" 
+        elif mese == 6:
+            month = "Giugno" 
         terInTo.append (terIn)
         terInToLog.append ( math.log10(int(terIn)) )
         ricoveratiTO.append (ricoverati)
@@ -679,8 +715,8 @@ if toscanaTerapiaIntensiva == True:
         terInOLd = terIn
         ospedalizzatiTOOld = ricoverati+terIn
         dimessiTOOld = dimessi
-
-    print (f"{bcolors.WARNING}%r- OSPEDALIZZATI/DIMESSI{bcolors.ENDC}" %regione )
+    
+    print (f"{bcolors.WARNING}TOSCANA- OSPEDALIZZATI/DIMESSI{bcolors.ENDC}" )
     
     terInOLd = 0
     terInTo=[]
@@ -708,6 +744,10 @@ if toscanaTerapiaIntensiva == True:
     for d in dayMay:
         dat = elabCasiTerInTO(str(d),'https://raw.githubusercontent.com/pcm-dpc/COVID-19/master/dati-regioni/dpc-covid19-ita-regioni-202005')
         calcCasiTerInTO(str(d),dat,5)
+     
+    for d in dayJun:
+        dat = elabCasiTerInTO(str(d),'https://raw.githubusercontent.com/pcm-dpc/COVID-19/master/dati-regioni/dpc-covid19-ita-regioni-202006')
+        calcCasiTerInTO(str(d),dat,6)
 
     fig80, ax1 = plt.subplots()
     ax1.plot(date, terInTo)
@@ -749,13 +789,13 @@ if toscanaTerapiaIntensiva == True:
     #Toscana - Deceduti/Dimessi/Ospedalizzati
     fig92, ax1 = plt.subplots()
     ax1.plot(date, decTO, color="black")
-    ax1.plot(date, dimessiTO, color="green")
+    #ax1.plot(date, dimessiTO, color="green")
     ax1.plot(date, ospedalizzatiTO, color="orange")
     ax1.plot(date, terInTo, color="purple")
     ax1.set(xlabel='Giorni', ylabel='',
         title='Toscana - Deceduti/Dimessi/Ospedalizzati Totali')
     ax1.grid()
-    ax1.legend(labels=['Deceduti', 'Dimessi', 'Ospedalizzati', 'Terapie Intensive'])
+    ax1.legend(labels=['Deceduti', 'Ospedalizzati', 'Terapie Intensive'])
     ax1.xaxis.set_minor_locator(mdates.DayLocator(interval=1))
     ax1.xaxis.set_major_locator(mdates.DayLocator(interval=5))
     ax1.xaxis.set_major_formatter(mdates.DateFormatter('%d-%m'))  
@@ -766,13 +806,13 @@ if toscanaTerapiaIntensiva == True:
     #Toscana - Deceduti/Dimessi/Ospedalizzati giornalieri
     fig93, ax1 = plt.subplots()
     ax1.plot(date, dech24TO, color="black")
-    ax1.plot(date, dimessiTOh24, color="green")
+    #ax1.plot(date, dimessiTOh24, color="green")
     ax1.plot(date, ospedalizzatiTOh24, color="orange")
     ax1.plot(date, terInArrToh24, color="purple")
     ax1.set(xlabel='Giorni', ylabel='',
         title='Toscana - Deceduti/Dimessi/Ospedalizzati variazione giornalieri')
     ax1.grid()
-    ax1.legend(labels=['Deceduti', 'Dimessi', 'Ospedalizzati', 'Terapie Intensive'])
+    ax1.legend(labels=['Deceduti', 'Ospedalizzati', 'Terapie Intensive'])
     ax1.xaxis.set_minor_locator(mdates.DayLocator(interval=1))
     ax1.xaxis.set_major_locator(mdates.DayLocator(interval=5))
     ax1.xaxis.set_major_formatter(mdates.DateFormatter('%d-%m'))  
@@ -990,6 +1030,8 @@ if pratoCasi == True:
             month = "Aprile" 
         elif mese == 5:
             month = "Maggio" 
+        elif mese == 6:
+            month = "Giugno" 
 
         #5
         casPo.append (casi[0])
@@ -1111,6 +1153,10 @@ if pratoCasi == True:
     for d in dayMay:
         dat = elabCasiPO(str(d),'https://raw.githubusercontent.com/pcm-dpc/COVID-19/master/dati-province/dpc-covid19-ita-province-202005')
         calcCasiPO(str(d),dat,5)
+    
+    for d in dayJun:
+        dat = elabCasiPO(str(d),'https://raw.githubusercontent.com/pcm-dpc/COVID-19/master/dati-province/dpc-covid19-ita-province-202006')
+        calcCasiPO(str(d),dat,6)
 
     fig90, ax1 = plt.subplots()
     ax1.bar(date, casPo)
